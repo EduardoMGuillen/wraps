@@ -1,10 +1,10 @@
 export const BRAND = {
   name: 'Wales Wrap',
-  city: 'Honduras',
+  city: 'San Pedro Sula',
   tagline: 'Míralo en tu coche.',
-  whatsapp: '50499990000',
-  whatsappLabel: '+504 9999-0000',
-  instagram: 'waleswrap',
+  whatsapp: '504XXXXXXXX', // TODO: Replace with real WhatsApp number before launch
+  whatsappLabel: '+504 XXXX-XXXX',
+  instagram: '', // TODO: Add Instagram handle when available (e.g. 'waleswrap')
   hours: 'Lun–Sáb · 8:00 a 6:00',
 }
 
@@ -211,14 +211,14 @@ export const SERVICES = [
     text: 'Flotas, logos y publicidad que se instala tenso y se ve de agencia.',
   },
   {
-    title: 'Mate o gloss, tú mandas',
+    title: 'Mate o brillante, tú mandas',
     text: 'Mismo color, dos personalidades. Lo pruebas arriba, en tu modelo.',
   },
 ]
 
 export const STEPS = [
   { n: '01', title: 'Elige el carro', text: 'Corolla, Elantra, Hilux, Prado… el que ves todos los días.' },
-  { n: '02', title: 'Color y acabado', text: 'Gira el modelo. Glossy para showroom, mate para stealth.' },
+  { n: '02', title: 'Color y acabado', text: 'Gira el modelo. Brillante para showroom, mate para stealth.' },
   { n: '03', title: 'WhatsApp', text: 'Te llega la combo lista: modelo, color y acabado. Cotizamos en el día.' },
   { n: '04', title: 'Instalación', text: 'Agenda, wrap en cabina y salís con el carro como lo viste en pantalla.' },
 ]
@@ -255,7 +255,7 @@ export function paintProps(hex, finish, metallic = false) {
 }
 
 export function whatsappLink({ car, color, finish }) {
-  const acabado = finish === 'glossy' ? 'glossy (brillante)' : 'mate'
+  const acabado = finish === 'glossy' ? 'brillante' : 'mate'
   const text = `Hola Wales Wrap, quiero un wrap en ${car.make} ${car.name}, color ${color.name}, acabado ${acabado}.`
   return `https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(text)}`
 }

@@ -40,7 +40,7 @@ export default function App() {
         <div className="marquee">
           {Array.from({ length: 2 }).map((_, loop) => (
             <span key={loop} style={{ display: 'flex', gap: '2.2rem' }}>
-              {['Corolla', 'Elantra', 'Civic', 'Hilux', 'Prado', 'Fortuner', 'Glossy', 'Mate', 'Wales Wrap', 'Honduras'].map(
+              {['Corolla', 'Elantra', 'Civic', 'Hilux', 'Prado', 'Fortuner', 'Brillante', 'Mate', 'Wales Wrap', 'San Pedro Sula'].map(
                 (item, i) => (
                   <span key={`${loop}-${i}`}>{item} ·</span>
                 ),
@@ -104,7 +104,7 @@ export default function App() {
           <p className="section-kicker">{BRAND.city}</p>
           <h2 className="display">¿Ya lo viste en tu carro?</h2>
           <p>
-            Mándanos el modelo, el color y si lo quieres glossy o mate. Te cotizamos con el vinilo que usamos en taller, no con un render inventado.
+            Mándanos el modelo, el color y si lo quieres brillante o mate. Te cotizamos con el vinilo que usamos en taller, no con un render inventado.
           </p>
           <a className="btn btn-wa" href={defaultLink} target="_blank" rel="noreferrer">
             Escribir a {BRAND.whatsappLabel}
