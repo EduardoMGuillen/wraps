@@ -5,9 +5,8 @@ export default function PngVisualizer() {
   const [carId, setCarId] = useState('hilux')
   const [colorId, setColorId] = useState('wales')
   const [finish, setFinish] = useState('glossy')
-  const [hasRealPhoto, setHasRealPhoto] = useState(false)
-  const canvasRef = useRef(null)
-  const baseImageRef = useRef(null)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imagePath, setImagePath] = useState('')
 
   const car = useMemo(() => CARS.find((c) => c.id === carId), [carId])
   const color = useMemo(() => COLORS.find((c) => c.id === colorId), [colorId])
@@ -15,14 +14,28 @@ export default function PngVisualizer() {
   const acabado = finish === 'glossy' ? 'Brillante' : 'Mate'
 
   useEffect(() => {
+    setImageLoaded(false)
+    const path = `/cars/${carId}/${colorId}.png`
     const img = new Image()
     img.onload = () => {
-      setHasRealPhoto(true)
-      baseImageRef.current = img
+      setImagePath(path)
+      setImageLoaded(true)
     }
-    img.onerror = () => setHasRealPhoto(false)
-    img.src = `/cars/${carId}.png`
-  }, [carId])
+    img.onerror = () => {
+      // Fallback to base car image if color-specific doesn't exist
+      const fallbackPath = `/cars/${carId}.png`
+      const fallbackImg = new Image()
+      fallbackImg.onload = () => {
+        setImagePath(fallbackPath)
+        setImageLoaded(true)
+      }
+      fallbackImg.onerror = () => {
+        setImageLoaded(false)
+      }
+      fallbackImg.src = fallbackPath
+    }
+    img.src = path
+  }, [carId, colorId])
 
   useEffect(() => {
     if (!hasRealPhoto || !baseImageRef.current || !canvasRef.current) return
@@ -150,15 +163,22 @@ export default function PngVisualizer() {
             
             {/* PNG-based car visualization */}
             <div className="png-car-display">
-              {hasRealPhoto ? (
+              {imageLoaded ? (
                 <div className="real-car-photo">
-                  <canvas 
-                    ref={canvasRef}
-                    className="car-tinted-canvas"
+                  <img 
+                    src={imagePath}
+                    alt={`${car.make} ${car.name} - ${color.name}`}
+                    className="car-base-photo"
+                  />
+                  {/* Light finish overlay: brightness adjustment only */}
+                  <div 
+                    className="finish-overlay"
                     style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain'
+                      filter: finish === 'glossy' 
+                        ? 'brightness(1.08) contrast(1.02)' 
+                        : 'brightness(0.92) contrast(0.98)',
+                      mixBlendMode: finish === 'glossy' ? 'screen' : 'multiply',
+                      opacity: finish === 'glossy' ? 0.15 : 0.12
                     }}
                   />
                 </div>
