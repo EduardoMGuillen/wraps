@@ -1,5 +1,5 @@
 import Hero from './components/Hero'
-import Visualizer from './components/Visualizer'
+import PngVisualizer from './components/PngVisualizer'
 import { BRAND, FAQS, SERVICES, STEPS, whatsappLink, CARS, COLORS } from './data'
 
 const defaultLink = whatsappLink({
@@ -50,7 +50,7 @@ export default function App() {
         </div>
       </div>
 
-      <Visualizer />
+      <PngVisualizer />
 
       <section className="section" id="servicios">
         <div className="wrap">

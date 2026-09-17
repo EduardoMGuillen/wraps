@@ -298,6 +298,86 @@ a {
   display: block;
 }
 
+.viz-stage-png {
+  position: relative;
+  min-height: 560px;
+  background: radial-gradient(ellipse at 50% 60%, #151a00 0%, #050505 62%);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.png-car-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.car-silhouette {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  transition: transform 0.3s ease;
+}
+
+.car-silhouette:hover {
+  transform: scale(1.02);
+}
+
+.car-base {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.asset-placeholder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.asset-placeholder svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
+  transition: filter 0.3s ease;
+}
+
+.asset-placeholder:hover svg {
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.6));
+}
+
+.asset-note {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(200, 255, 0, 0.2);
+  color: var(--lime);
+  padding: 0.6rem 1rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
 .viz-badge {
   position: absolute;
   left: 1rem;
@@ -598,7 +678,8 @@ details p {
     grid-template-columns: 1fr;
   }
 
-  .viz-stage {
+  .viz-stage,
+  .viz-stage-png {
     min-height: 420px;
   }
 
@@ -609,6 +690,20 @@ details p {
   .swatches {
     grid-template-columns: repeat(8, 1fr);
   }
+
+  .png-car-display {
+    padding: 1rem;
+  }
+
+  .car-silhouette {
+    height: 320px;
+  }
+
+  .asset-note {
+    font-size: 0.7rem;
+    padding: 0.5rem 0.8rem;
+    bottom: 1rem;
+  }
 }
 
 @media (max-width: 560px) {
@@ -618,5 +713,57 @@ details p {
 
   .hero-canvas {
     min-height: 58svh;
+  }
+
+  .section {
+    padding: 3rem 1rem;
+  }
+
+  .viz-stage-png {
+    min-height: 380px;
+  }
+
+  .car-silhouette {
+    height: 280px;
+  }
+
+  .viz-caption {
+    flex-direction: column;
+    align-items: start;
+    gap: 0.4rem;
+  }
+
+  .viz-caption strong {
+    font-size: 1.15rem;
+  }
+
+  .viz-caption span {
+    font-size: 0.78rem;
+  }
+
+  .panel {
+    padding: 1rem;
+  }
+
+  .finish {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    padding: 0.6rem 1rem;
+  }
+
+  .nav-brand img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nav-brand span {
+    font-size: 1rem;
+  }
+
+  .btn {
+    font-size: 0.82rem;
+    padding: 0.7rem 1rem;
   }
 }
