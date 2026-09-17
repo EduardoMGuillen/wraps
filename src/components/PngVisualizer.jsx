@@ -48,10 +48,57 @@ export default function PngVisualizer() {
       } : null
     }
 
+    const rgbToHsl = (r, g, b) => {
+      r /= 255
+      g /= 255
+      b /= 255
+      const max = Math.max(r, g, b)
+      const min = Math.min(r, g, b)
+      let h, s, l = (max + min) / 2
+
+      if (max === min) {
+        h = s = 0
+      } else {
+        const d = max - min
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+        switch (max) {
+          case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break
+          case g: h = ((b - r) / d + 2) / 6; break
+          case b: h = ((r - g) / d + 4) / 6; break
+        }
+      }
+      return { h, s, l }
+    }
+
+    const hslToRgb = (h, s, l) => {
+      let r, g, b
+
+      if (s === 0) {
+        r = g = b = l
+      } else {
+        const hue2rgb = (p, q, t) => {
+          if (t < 0) t += 1
+          if (t > 1) t -= 1
+          if (t < 1/6) return p + (q - p) * 6 * t
+          if (t < 1/2) return q
+          if (t < 2/3) return p + (q - p) * (2/3 - t) * 6
+          return p
+        }
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s
+        const p = 2 * l - q
+        r = hue2rgb(p, q, h + 1/3)
+        g = hue2rgb(p, q, h)
+        b = hue2rgb(p, q, h - 1/3)
+      }
+      return { r: r * 255, g: g * 255, b: b * 255 }
+    }
+
     const wrapColor = hexToRgb(color.hex)
-    const luminanceThreshold = 160
-    const glossyIntensity = 0.5
-    const matteIntensity = 0.65
+    const wrapHsl = rgbToHsl(wrapColor.r, wrapColor.g, wrapColor.b)
+    
+    const luminanceThreshold = 110
+    const saturationThreshold = 0.30
+    const minLuminanceForBody = 80
 
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i]
@@ -59,14 +106,28 @@ export default function PngVisualizer() {
       const b = data[i + 2]
       
       const luminance = 0.299 * r + 0.587 * g + 0.114 * b
+      const pixelHsl = rgbToHsl(r, g, b)
 
-      if (luminance > luminanceThreshold) {
-        const tintStrength = finish === 'glossy' ? glossyIntensity : matteIntensity
-        const brightnessFactor = finish === 'glossy' ? 1.1 : 0.85
+      if (luminance > minLuminanceForBody && 
+          luminance > luminanceThreshold && 
+          pixelHsl.s < saturationThreshold) {
         
-        data[i] = r * (1 - tintStrength) + wrapColor.r * tintStrength * brightnessFactor
-        data[i + 1] = g * (1 - tintStrength) + wrapColor.g * tintStrength * brightnessFactor
-        data[i + 2] = b * (1 - tintStrength) + wrapColor.b * tintStrength * brightnessFactor
+        const targetSaturation = finish === 'glossy' ? 0.88 : 0.72
+        
+        let targetLightness
+        if (finish === 'glossy') {
+          targetLightness = 0.38 + (pixelHsl.l - 0.5) * 0.3
+          targetLightness = Math.max(0.25, Math.min(0.55, targetLightness))
+        } else {
+          targetLightness = 0.32 + (pixelHsl.l - 0.5) * 0.25
+          targetLightness = Math.max(0.22, Math.min(0.48, targetLightness))
+        }
+
+        const newRgb = hslToRgb(wrapHsl.h, targetSaturation, targetLightness)
+        
+        data[i] = Math.round(newRgb.r)
+        data[i + 1] = Math.round(newRgb.g)
+        data[i + 2] = Math.round(newRgb.b)
       }
     }
 
