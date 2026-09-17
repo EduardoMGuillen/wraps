@@ -1,15 +1,23 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { CARS, COLORS, whatsappLink } from '../data.js'
 
 export default function PngVisualizer() {
   const [carId, setCarId] = useState('hilux')
   const [colorId, setColorId] = useState('wales')
   const [finish, setFinish] = useState('glossy')
+  const [hasRealPhoto, setHasRealPhoto] = useState(false)
 
   const car = useMemo(() => CARS.find((c) => c.id === carId), [carId])
   const color = useMemo(() => COLORS.find((c) => c.id === colorId), [colorId])
   const link = whatsappLink({ car, color, finish })
   const acabado = finish === 'glossy' ? 'Brillante' : 'Mate'
+
+  useEffect(() => {
+    const img = new Image()
+    img.onload = () => setHasRealPhoto(true)
+    img.onerror = () => setHasRealPhoto(false)
+    img.src = `/cars/${carId}.png`
+  }, [carId])
 
   return (
     <section className="section visualizer" id="visualizador">
@@ -26,26 +34,35 @@ export default function PngVisualizer() {
             
             {/* PNG-based car visualization */}
             <div className="png-car-display">
-              <div 
-                className="car-silhouette" 
-                data-car={car.id}
-                style={{
-                  '--wrap-color': color.hex,
-                  '--wrap-finish': finish === 'glossy' ? '1' : '0.3'
-                }}
-              >
-                {/* Base car shape with color overlay */}
-                <div className="car-base">
-                  <div className="car-body" style={{ backgroundColor: color.hex }}>
-                    {/* Car body colored with selected wrap */}
-                  </div>
-                  <div className="car-windows"></div>
-                  <div className="car-wheels"></div>
-                  {finish === 'glossy' && <div className="gloss-shine"></div>}
+              {hasRealPhoto ? (
+                <div className="real-car-photo">
+                  <img 
+                    src={`/cars/${carId}.png`} 
+                    alt={`${car.make} ${car.name}`}
+                    style={{
+                      filter: finish === 'glossy' ? 'brightness(1.05) contrast(1.1)' : 'brightness(0.95) saturate(0.85)'
+                    }}
+                  />
+                  <div 
+                    className="color-overlay"
+                    style={{
+                      backgroundColor: color.hex,
+                      opacity: finish === 'glossy' ? 0.15 : 0.25,
+                      mixBlendMode: 'multiply'
+                    }}
+                  />
                 </div>
-                
-                {/* Asset placeholder - real photos would go here */}
-                <div className="asset-placeholder">
+              ) : (
+                <div 
+                  className="car-silhouette" 
+                  data-car={car.id}
+                  style={{
+                    '--wrap-color': color.hex,
+                    '--wrap-finish': finish === 'glossy' ? '1' : '0.3'
+                  }}
+                >
+                  {/* SVG fallback when real photo not available */}
+                  <div className="asset-placeholder">
                   <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                       <linearGradient id={`carGrad-${finish}`} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -149,11 +166,12 @@ export default function PngVisualizer() {
                     )}
                   </svg>
                   
-                  <div className="asset-note">
-                    📸 Espacio para foto real del {car.make} {car.name}
+                    <div className="asset-note">
+                      📸 Espacio para foto real del {car.make} {car.name}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="viz-caption">

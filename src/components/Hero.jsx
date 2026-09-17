@@ -1,8 +1,19 @@
 import { Suspense, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Environment, Float, OrbitControls, ContactShadows } from '@react-three/drei'
+import { Float, OrbitControls, ContactShadows } from '@react-three/drei'
 import { useTexture } from '@react-three/drei'
+import { ErrorBoundary } from './ErrorBoundary.jsx'
 import * as THREE from 'three'
+
+function checkWebGLSupport() {
+  try {
+    const canvas = document.createElement('canvas')
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+    return !!gl
+  } catch (e) {
+    return false
+  }
+}
 
 function LogoPlaque() {
   const texture = useTexture('/logo.png')
@@ -45,15 +56,24 @@ function FallbackLogo() {
 }
 
 export default function Hero() {
-  const [use3D, setUse3D] = useState(true)
+  const [use3D, setUse3D] = useState(false)
   const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
+    const hasWebGL = checkWebGLSupport()
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     
+    if (!hasWebGL) {
+      setUse3D(false)
+      setHasError(true)
+      return
+    }
+
     if (isMobile || prefersReducedMotion) {
       setUse3D(false)
+    } else {
+      setUse3D(true)
     }
 
     const errorTimer = setTimeout(() => {
@@ -61,41 +81,47 @@ export default function Hero() {
         setHasError(true)
         setUse3D(false)
       }
-    }, 5000)
+    }, 8000)
 
     return () => clearTimeout(errorTimer)
-  }, [use3D, hasError])
+  }, [])
 
   return (
     <header className="hero" id="top">
       <div className="hero-canvas">
         {use3D && !hasError ? (
-          <Canvas
-            dpr={[1, 1.5]}
-            camera={{ position: [0, 0.15, 5.1], fov: 32 }}
-            gl={{ antialias: false, alpha: true, powerPreference: 'low-power' }}
-            onCreated={({ gl }) => {
-              gl.setClearColor('#050505', 1)
-            }}
-          >
-            <color attach="background" args={['#050505']} />
-            <ambientLight intensity={0.55} />
-            <spotLight position={[5, 6, 4]} intensity={60} color="#c8ff00" angle={0.5} penumbra={0.8} />
-            <spotLight position={[-5, 3, 5]} intensity={35} color="#ffffff" angle={0.6} penumbra={1} />
-            <Suspense fallback={<FallbackLogo />}>
-              <LogoPlaque />
-              <Environment preset="night" />
-            </Suspense>
-            <ContactShadows position={[0, -1.55, 0]} opacity={0.45} scale={8} blur={2.6} far={3} />
-            <OrbitControls
-              enablePan={false}
-              enableZoom={false}
-              autoRotate
-              autoRotateSpeed={1.35}
-              minPolarAngle={Math.PI / 2.7}
-              maxPolarAngle={Math.PI / 1.7}
-            />
-          </Canvas>
+          <ErrorBoundary fallback={<FallbackLogo />}>
+            <Canvas
+              dpr={[1, 1.5]}
+              camera={{ position: [0, 0.15, 5.1], fov: 32 }}
+              gl={{ antialias: false, alpha: true, powerPreference: 'low-power' }}
+              onCreated={({ gl }) => {
+                gl.setClearColor('#050505', 1)
+              }}
+              onError={() => {
+                setHasError(true)
+                setUse3D(false)
+              }}
+            >
+              <color attach="background" args={['#050505']} />
+              <ambientLight intensity={0.65} />
+              <directionalLight position={[5, 6, 4]} intensity={2.5} color="#c8ff00" />
+              <directionalLight position={[-5, 3, 5]} intensity={1.2} color="#ffffff" />
+              <pointLight position={[0, 2, -3]} intensity={0.8} color="#c8ff00" />
+              <Suspense fallback={null}>
+                <LogoPlaque />
+              </Suspense>
+              <ContactShadows position={[0, -1.55, 0]} opacity={0.45} scale={8} blur={2.6} far={3} />
+              <OrbitControls
+                enablePan={false}
+                enableZoom={false}
+                autoRotate
+                autoRotateSpeed={1.35}
+                minPolarAngle={Math.PI / 2.7}
+                maxPolarAngle={Math.PI / 1.7}
+              />
+            </Canvas>
+          </ErrorBoundary>
         ) : (
           <FallbackLogo />
         )}
