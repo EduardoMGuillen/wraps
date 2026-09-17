@@ -39,18 +39,29 @@ export default function PngVisualizer() {
                   <img 
                     src={`/cars/${carId}.png`} 
                     alt={`${car.make} ${car.name}`}
-                    style={{
-                      filter: finish === 'glossy' ? 'brightness(1.05) contrast(1.1)' : 'brightness(0.95) saturate(0.85)'
-                    }}
+                    className="car-base-photo"
                   />
                   <div 
-                    className="color-overlay"
+                    className="wrap-tint"
                     style={{
                       backgroundColor: color.hex,
-                      opacity: finish === 'glossy' ? 0.15 : 0.25,
-                      mixBlendMode: 'multiply'
+                      opacity: finish === 'glossy' ? 0.28 : 0.42,
+                      mixBlendMode: 'multiply',
+                      filter: finish === 'glossy' 
+                        ? 'brightness(1.15) contrast(1.2) saturate(1.1)' 
+                        : 'brightness(0.88) contrast(0.95) saturate(0.8)'
                     }}
                   />
+                  {finish === 'glossy' && (
+                    <div 
+                      className="gloss-highlights"
+                      style={{
+                        background: `linear-gradient(135deg, transparent 40%, ${color.hex}22 50%, transparent 60%)`,
+                        mixBlendMode: 'screen',
+                        opacity: 0.6
+                      }}
+                    />
+                  )}
                 </div>
               ) : (
                 <div 

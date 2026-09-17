@@ -497,21 +497,36 @@ a {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.45));
 }
 
-.real-car-photo img {
+.car-base-photo {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: filter 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
-.real-car-photo .color-overlay {
+.wrap-tint {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  transition: background-color 0.3s ease, opacity 0.3s ease;
+  z-index: 2;
+  transition: all 0.3s ease;
 }
+
+.gloss-highlights {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  transition: opacity 0.3s ease;
+}
+
+/* Pitch approximation: tints entire photo body.
+   For production mask: use Canvas API or multiply blend on body-only layer,
+   excluding chrome, glass, wheels, lights via manual mask or ML segmentation. */
 
 .viz-badge {
   position: absolute;
