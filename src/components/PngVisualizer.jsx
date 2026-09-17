@@ -80,18 +80,39 @@ export default function PngVisualizer() {
                     src={imagePath}
                     alt={`${car.make} ${car.name} - ${color.name}`}
                     className="car-base-photo"
-                  />
-                  {/* Light finish overlay: brightness adjustment only */}
-                  <div 
-                    className="finish-overlay"
                     style={{
-                      filter: finish === 'glossy' 
-                        ? 'brightness(1.08) contrast(1.02)' 
-                        : 'brightness(0.92) contrast(0.98)',
-                      mixBlendMode: finish === 'glossy' ? 'screen' : 'multiply',
-                      opacity: finish === 'glossy' ? 0.15 : 0.12
+                      filter: finish === 'glossy'
+                        ? 'contrast(1.04) saturate(1.06) brightness(1.02)'
+                        : 'contrast(0.94) saturate(0.78) brightness(0.92)',
                     }}
                   />
+                  {/* Finish: Brillante = subtle gloss; Mate = clearly flat */}
+                  <div
+                    className={`finish-overlay finish-${finish}`}
+                    style={{
+                      background:
+                        finish === 'glossy'
+                          ? 'linear-gradient(135deg, rgba(255,255,255,0.35) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.12) 100%)'
+                          : 'rgba(20, 18, 16, 0.45)',
+                      mixBlendMode: finish === 'glossy' ? 'screen' : 'multiply',
+                      opacity: finish === 'glossy' ? 0.45 : 0.72,
+                      filter:
+                        finish === 'glossy'
+                          ? 'contrast(1.05) saturate(1.05)'
+                          : 'brightness(0.88) contrast(0.92) saturate(0.82)',
+                    }}
+                  />
+                  {finish === 'matte' && (
+                    <div
+                      className="finish-overlay finish-matte-flat"
+                      style={{
+                        background: 'rgba(128, 120, 110, 0.28)',
+                        mixBlendMode: 'soft-light',
+                        opacity: 0.85,
+                        pointerEvents: 'none',
+                      }}
+                    />
+                  )}
                 </div>
               ) : (
                 <div className="loading-placeholder">
