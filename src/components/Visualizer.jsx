@@ -37,7 +37,7 @@ export default function Visualizer() {
   const car = useMemo(() => CARS.find((c) => c.id === carId), [carId])
   const color = useMemo(() => COLORS.find((c) => c.id === colorId), [colorId])
   const link = whatsappLink({ car, color, finish })
-  const acabado = finish === 'glossy' ? 'Glossy' : 'Mate'
+  const acabado = finish === 'glossy' ? 'Brillante' : 'Mate'
 
   return (
     <section className="section visualizer" id="visualizador">
@@ -124,7 +124,7 @@ export default function Visualizer() {
                   onClick={() => setFinish('glossy')}
                 >
                   <div className="finish-orb gloss" style={{ '--orb': color.hex }} />
-                  <strong>Glossy</strong>
+                  <strong>Brillante</strong>
                   <span>Brillo tipo showroom. Refleja todo.</span>
                 </button>
                 <button
