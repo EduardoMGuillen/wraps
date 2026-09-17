@@ -4,7 +4,8 @@ export const BRAND = {
   tagline: 'Míralo en tu coche.',
   whatsapp: '504XXXXXXXX', // TODO: Replace with real WhatsApp number before launch
   whatsappLabel: '+504 XXXX-XXXX',
-  instagram: '', // TODO: Add Instagram handle when available (e.g. 'waleswrap')
+  instagram: 'wales_wrap',
+  instagramUrl: 'https://www.instagram.com/wales_wrap/',
   hours: 'Lun–Sáb · 8:00 a 6:00',
 }
 
