@@ -344,12 +344,8 @@ a {
     animation: none;
   }
 
-  .car-silhouette:hover {
-    transform: none;
-  }
-
-  .asset-placeholder:hover svg {
-    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
+  .loading-spinner {
+    animation: none;
   }
 }
 
@@ -428,64 +424,29 @@ a {
   padding: 2rem;
 }
 
-.car-silhouette {
+.loading-placeholder {
   position: relative;
   width: 100%;
   max-width: 800px;
   height: 400px;
-  transition: transform 0.3s ease;
-}
-
-.car-silhouette:hover {
-  transform: scale(1.02);
-}
-
-.car-base {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(10, 10, 10, 0.6);
+  border-radius: 8px;
 }
 
-.asset-placeholder {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(200, 255, 0, 0.1);
+  border-top-color: var(--lime);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
-.asset-placeholder svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
-  transition: filter 0.3s ease;
-}
-
-.asset-placeholder:hover svg {
-  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.6));
-}
-
-.asset-note {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(200, 255, 0, 0.2);
-  color: var(--lime);
-  padding: 0.6rem 1rem;
-  border-radius: 3px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  text-align: center;
-  pointer-events: none;
-  opacity: 0.85;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .real-car-photo {
@@ -989,14 +950,8 @@ details p {
     padding: 1rem;
   }
 
-  .car-silhouette {
+  .loading-placeholder {
     height: 320px;
-  }
-
-  .asset-note {
-    font-size: 0.7rem;
-    padding: 0.5rem 0.8rem;
-    bottom: 1rem;
   }
 }
 
@@ -1026,7 +981,7 @@ details p {
     min-height: 380px;
   }
 
-  .car-silhouette {
+  .loading-placeholder {
     height: 280px;
   }
 
