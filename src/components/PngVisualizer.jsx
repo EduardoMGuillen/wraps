@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CARS, COLORS, whatsappLink } from '../data'
+import { CARS, COLORS, whatsappLink } from '../data.js'
 
 export default function PngVisualizer() {
   const [carId, setCarId] = useState('hilux')
@@ -17,7 +17,7 @@ export default function PngVisualizer() {
         <p className="section-kicker">Configurador</p>
         <h2 className="display">Míralo en tu coche</h2>
         <p className="lede">
-          Modelos que se ven todos los días en Honduras. Gira el carro, cambia el vinilo, elige brillo o mate y mándanos la combo por WhatsApp.
+          Modelos que se ven todos los días en San Pedro Sula. Gira el carro, cambia el vinilo, elige brillo o mate y mándanos la combo por WhatsApp.
         </p>
 
         <div className="viz-grid">

@@ -235,7 +235,7 @@ export const FAQS = [
   },
   {
     q: '¿El visualizador es el color exacto?',
-    a: 'Es una guía fiel del tono y del acabado. El vinilo real se confirma en taller con muestras físicas a la luz de Honduras.',
+    a: 'Es una guía fiel del tono y del acabado. El vinilo real se confirma en taller con muestras físicas a la luz de San Pedro Sula.',
   },
   {
     q: '¿Puedo volver al color original?',

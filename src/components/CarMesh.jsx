@@ -1,5 +1,5 @@
 import { RoundedBox } from '@react-three/drei'
-import { paintProps } from '../data'
+import { paintProps } from '../data.js'
 
 function Paint({ color, finish }) {
   return <meshPhysicalMaterial {...paintProps(color.hex, finish, color.metallic)} />

@@ -1,6 +1,6 @@
-import Hero from './components/Hero'
-import PngVisualizer from './components/PngVisualizer'
-import { BRAND, FAQS, SERVICES, STEPS, whatsappLink, CARS, COLORS } from './data'
+import Hero from './components/Hero.jsx'
+import PngVisualizer from './components/PngVisualizer.jsx'
+import { BRAND, FAQS, SERVICES, STEPS, whatsappLink, CARS, COLORS } from './data.js'
 
 const defaultLink = whatsappLink({
   car: CARS.find((c) => c.id === 'hilux'),

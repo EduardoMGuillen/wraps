@@ -1,8 +1,8 @@
 import { Suspense, useMemo, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
-import { CARS, COLORS, whatsappLink } from '../data'
-import CarMesh from './CarMesh'
+import { CARS, COLORS, whatsappLink } from '../data.js'
+import CarMesh from './CarMesh.jsx'
 
 function Studio({ car, color, finish }) {
   return (
@@ -45,7 +45,7 @@ export default function Visualizer() {
         <p className="section-kicker">Configurador</p>
         <h2 className="display">Míralo en tu coche</h2>
         <p className="lede">
-          Modelos que se ven todos los días en Honduras. Gira el carro, cambia el vinilo, elige brillo o mate y mándanos la combo por WhatsApp.
+          Modelos que se ven todos los días en San Pedro Sula. Gira el carro, cambia el vinilo, elige brillo o mate y mándanos la combo por WhatsApp.
         </p>
 
         <div className="viz-grid">
