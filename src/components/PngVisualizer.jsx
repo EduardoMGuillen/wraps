@@ -114,14 +114,15 @@ export default function PngVisualizer() {
         
         const targetSaturation = finish === 'glossy' ? 0.88 : 0.72
         
-        let targetLightness
-        if (finish === 'glossy') {
-          targetLightness = 0.38 + (pixelHsl.l - 0.5) * 0.3
-          targetLightness = Math.max(0.25, Math.min(0.55, targetLightness))
-        } else {
-          targetLightness = 0.32 + (pixelHsl.l - 0.5) * 0.25
-          targetLightness = Math.max(0.22, Math.min(0.48, targetLightness))
-        }
+        const baseLightness = finish === 'glossy' ? 
+          Math.max(wrapHsl.l, 0.42) : 
+          Math.max(wrapHsl.l * 0.85, 0.30)
+        
+        const lightnessRange = finish === 'glossy' ? 0.32 : 0.26
+        const normalizedPixelL = (pixelHsl.l - 0.5) / 0.5
+        
+        let targetLightness = baseLightness + (normalizedPixelL * lightnessRange)
+        targetLightness = Math.max(0.20, Math.min(0.60, targetLightness))
 
         const newRgb = hslToRgb(wrapHsl.h, targetSaturation, targetLightness)
         
