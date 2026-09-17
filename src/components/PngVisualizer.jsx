@@ -7,11 +7,33 @@ export default function PngVisualizer() {
   const [finish, setFinish] = useState('glossy')
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imagePath, setImagePath] = useState('')
+  const [searchText, setSearchText] = useState('')
+  const [brandFilter, setBrandFilter] = useState('all')
 
   const car = useMemo(() => CARS.find((c) => c.id === carId), [carId])
   const color = useMemo(() => COLORS.find((c) => c.id === colorId), [colorId])
   const link = whatsappLink({ car, color, finish })
   const acabado = finish === 'glossy' ? 'Brillante' : 'Mate'
+
+  // Get unique makes for brand filter
+  const brands = useMemo(() => {
+    const uniqueBrands = [...new Set(CARS.map(c => c.make))].sort()
+    return uniqueBrands
+  }, [])
+
+  // Filter cars based on search and brand
+  const filteredCars = useMemo(() => {
+    return CARS.filter(car => {
+      const matchesSearch = searchText === '' || 
+        car.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        car.make.toLowerCase().includes(searchText.toLowerCase()) ||
+        car.note.toLowerCase().includes(searchText.toLowerCase())
+      
+      const matchesBrand = brandFilter === 'all' || car.make === brandFilter
+      
+      return matchesSearch && matchesBrand
+    })
+  }, [searchText, brandFilter])
 
   useEffect(() => {
     setImageLoaded(false)
@@ -322,18 +344,48 @@ export default function PngVisualizer() {
           <aside className="panel">
             <div className="panel-scroll">
               <h3>Modelo</h3>
+              
+              {/* Car filters */}
+              <div className="car-filters">
+                <input
+                  type="text"
+                  className="car-search"
+                  placeholder="Buscar modelo..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  aria-label="Buscar por nombre o marca"
+                />
+                <select
+                  className="brand-filter"
+                  value={brandFilter}
+                  onChange={(e) => setBrandFilter(e.target.value)}
+                  aria-label="Filtrar por marca"
+                >
+                  <option value="all">Todas las marcas</option>
+                  {brands.map((brand) => (
+                    <option key={brand} value={brand}>
+                      {brand}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="car-list">
-                {CARS.map((item) => (
-                  <button
-                    key={item.id}
-                    className={`car-chip ${item.id === carId ? 'active' : ''}`}
-                    onClick={() => setCarId(item.id)}
-                    type="button"
-                  >
-                    {item.make} {item.name}
-                    <small>{item.note}</small>
-                  </button>
-                ))}
+                {filteredCars.length > 0 ? (
+                  filteredCars.map((item) => (
+                    <button
+                      key={item.id}
+                      className={`car-chip ${item.id === carId ? 'active' : ''}`}
+                      onClick={() => setCarId(item.id)}
+                      type="button"
+                    >
+                      {item.make} {item.name}
+                      <small>{item.note}</small>
+                    </button>
+                  ))
+                ) : (
+                  <p className="no-results">No se encontraron modelos</p>
+                )}
               </div>
 
               <h3>Color del wrap</h3>

@@ -631,6 +631,63 @@ a {
   color: var(--lime);
 }
 
+.car-filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.car-search {
+  flex: 1;
+  background: var(--panel-2);
+  border: 1px solid transparent;
+  color: var(--text);
+  padding: 0.55rem 0.7rem;
+  font-size: 0.85rem;
+  border-radius: 2px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.car-search:focus {
+  outline: none;
+  border-color: var(--lime);
+}
+
+.car-search::placeholder {
+  color: var(--muted);
+}
+
+.brand-filter {
+  background: var(--panel-2);
+  border: 1px solid transparent;
+  color: var(--text);
+  padding: 0.55rem 0.7rem;
+  font-size: 0.85rem;
+  border-radius: 2px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  min-width: 140px;
+}
+
+.brand-filter:focus {
+  outline: none;
+  border-color: var(--lime);
+}
+
+.brand-filter:hover {
+  border-color: rgba(200, 255, 0, 0.3);
+}
+
+.no-results {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 1.5rem 0.5rem;
+  grid-column: 1 / -1;
+}
+
 .swatches {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -946,6 +1003,15 @@ details p {
 @media (max-width: 560px) {
   .car-list {
     grid-template-columns: 1fr;
+  }
+
+  .car-filters {
+    flex-direction: column;
+  }
+
+  .brand-filter {
+    min-width: 0;
+    width: 100%;
   }
 
   .hero-canvas {
