@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { CARS, COLORS, whatsappLink } from '../data.js'
 
 export default function PngVisualizer() {
@@ -6,6 +6,8 @@ export default function PngVisualizer() {
   const [colorId, setColorId] = useState('wales')
   const [finish, setFinish] = useState('glossy')
   const [hasRealPhoto, setHasRealPhoto] = useState(false)
+  const canvasRef = useRef(null)
+  const baseImageRef = useRef(null)
 
   const car = useMemo(() => CARS.find((c) => c.id === carId), [carId])
   const color = useMemo(() => COLORS.find((c) => c.id === colorId), [colorId])
@@ -14,10 +16,62 @@ export default function PngVisualizer() {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => setHasRealPhoto(true)
+    img.onload = () => {
+      setHasRealPhoto(true)
+      baseImageRef.current = img
+    }
     img.onerror = () => setHasRealPhoto(false)
     img.src = `/cars/${carId}.png`
   }, [carId])
+
+  useEffect(() => {
+    if (!hasRealPhoto || !baseImageRef.current || !canvasRef.current) return
+
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    const img = baseImageRef.current
+
+    canvas.width = img.width
+    canvas.height = img.height
+
+    ctx.drawImage(img, 0, 0)
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const data = imageData.data
+
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null
+    }
+
+    const wrapColor = hexToRgb(color.hex)
+    const luminanceThreshold = 160
+    const glossyIntensity = 0.5
+    const matteIntensity = 0.65
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i]
+      const g = data[i + 1]
+      const b = data[i + 2]
+      
+      const luminance = 0.299 * r + 0.587 * g + 0.114 * b
+
+      if (luminance > luminanceThreshold) {
+        const tintStrength = finish === 'glossy' ? glossyIntensity : matteIntensity
+        const brightnessFactor = finish === 'glossy' ? 1.1 : 0.85
+        
+        data[i] = r * (1 - tintStrength) + wrapColor.r * tintStrength * brightnessFactor
+        data[i + 1] = g * (1 - tintStrength) + wrapColor.g * tintStrength * brightnessFactor
+        data[i + 2] = b * (1 - tintStrength) + wrapColor.b * tintStrength * brightnessFactor
+      }
+    }
+
+    ctx.putImageData(imageData, 0, 0)
+  }, [hasRealPhoto, color, finish])
 
   return (
     <section className="section visualizer" id="visualizador">
@@ -36,32 +90,15 @@ export default function PngVisualizer() {
             <div className="png-car-display">
               {hasRealPhoto ? (
                 <div className="real-car-photo">
-                  <img 
-                    src={`/cars/${carId}.png`} 
-                    alt={`${car.make} ${car.name}`}
-                    className="car-base-photo"
-                  />
-                  <div 
-                    className="wrap-tint"
+                  <canvas 
+                    ref={canvasRef}
+                    className="car-tinted-canvas"
                     style={{
-                      backgroundColor: color.hex,
-                      opacity: finish === 'glossy' ? 0.28 : 0.42,
-                      mixBlendMode: 'multiply',
-                      filter: finish === 'glossy' 
-                        ? 'brightness(1.15) contrast(1.2) saturate(1.1)' 
-                        : 'brightness(0.88) contrast(0.95) saturate(0.8)'
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain'
                     }}
                   />
-                  {finish === 'glossy' && (
-                    <div 
-                      className="gloss-highlights"
-                      style={{
-                        background: `linear-gradient(135deg, transparent 40%, ${color.hex}22 50%, transparent 60%)`,
-                        mixBlendMode: 'screen',
-                        opacity: 0.6
-                      }}
-                    />
-                  )}
                 </div>
               ) : (
                 <div 
